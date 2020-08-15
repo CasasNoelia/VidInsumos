@@ -8,6 +8,8 @@
 
 <div class="row">
     <div class="col-md-5">
+        <th></th>
+        <th></th>
         <h5>CLIENTES:</h5>
         <hr>
         <div class="card card-body">
@@ -16,8 +18,17 @@
                 <tr>
                     <th></th>
                     <th>Cliente</th>
-                    <th>Pedido</th>
+                    <th>Contacto</th>
                 </tr>
+
+                {% for cliente in cliente %}
+                    <tr>
+                        <td><a class="btn btn-sm btn-info" href="{% url 'cliente' cliente.id %}">View</a></td>
+                        <td>{{cliente.name}}</td>
+                        <td>{{cliente.phone}}</td>
+                    </tr>
+                {% endfor %}
+
             </table>
     </div>
 </div>
@@ -26,7 +37,7 @@
         <h5>TOTAL PEDIDOS:</h5>
         <hr>
         <div class="card card-body">
-        <a class="btn btn-primary btn-sm btn-block" href="">Visualizar pedidos</a>
+        <a class="btn btn-primary btn-sm btn-block" href="{% url 'crear_pedido' %}">Crear pedidos</a>
             <table class="table table-sm">
                 <tr>
                     <th>Productos</th>
@@ -35,7 +46,19 @@
                     <th>Actualizar</th>
                     <th>Eliminar</th>
                 </tr>
+
+                {% for pedido in pedido %}
+                    <tr>
+                        <td>{{pedido.productos}}</td>
+                        <td>{{pedido.fecha_creacion}}</td>
+                        <td>{{pedido.status}}</td>
+                        <td><a class="btn btn-sm btn-info" href="">Actualizar</a> </td>
+                        <td><a class="btn btn-sm btn-danger" href="">Eliminar</a> </td>
+                    </tr>
+                {% endfor %}
+
             </table>
     </div>
 </div>
+
 {% endblock %}
