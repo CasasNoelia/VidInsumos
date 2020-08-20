@@ -9,8 +9,8 @@
 		<div class="card card-body">
 			<h5>Customer:</h5>
 			<hr>
-			<a class="btn btn-outline-info  btn-sm btn-block" href="">Update Customer</a>
-			<a class="btn btn-outline-danger  btn-sm btn-block" href="">Delete Customer</a>
+			<a class="btn btn-outline-info  btn-sm btn-block" href="">Actualizar datos Cliente</a>
+			<a class="btn btn-outline-info  btn-sm btn-block" href="{% url 'crear_pedido' cliente.id %}">Realizar Pedido</a>
 
 		</div>
 	</div>
@@ -68,8 +68,8 @@
 					<td>{{pedido.productos.categoria}}</td>
 					<td>{{pedido.fecha_creacion}}</td>
 					<td>{{pedido.status}}</td>
-					<td><a class="btn btn-sm btn-info" href="" >Actualizar</a></td>
-					<td><a class="btn btn-sm btn-danger" href="" >Eliminar</a></td>
+					<td><a class="btn btn-sm btn-info" href="{% url 'actualizar_pedido' pedido.id %}">Actualizar</a> </td>
+					<td><a class="btn btn-sm btn-danger" href="{% url 'eliminar_pedido' pedido.id %}">Eliminar</a> </td>
 
 				</tr>
 
