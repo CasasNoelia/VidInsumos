@@ -27,6 +27,7 @@ def registerPage(request):
 
             group = Group.objects.get(name='Cliente')
             user.groups.add(group)
+            Cliente.objects.create(user=user,)
 
             messages.success(request, 'Account was created for ' + username)
 
@@ -68,6 +69,7 @@ def home(request):
     cliente = Cliente.objects.all()
 
     total_cliente = cliente.count()
+
     total_pedido = pedido.count()
     entregado = pedido.filter(status='Entregado').count()
     pendiente = pedido.filter(status='Pendiente').count()
@@ -75,9 +77,19 @@ def home(request):
     context = {'pedido': pedido, 'cliente': cliente,'total_cliente': total_cliente,'total_pedido': total_pedido, 'entregado': entregado, 'pendiente': pendiente }
     return render(request, 'accounts/dashboard.html', context)
 
-
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['Cliente'])
 def userPage(request):
-    context = {}
+    pedido = request.user.cliente.pedido_set.all()
+
+    total_pedido = pedido.count()
+    entregado = pedido.filter(status='Entregado').count()
+    pendiente = pedido.filter(status='Pendiente').count()
+
+    print('PEDIDO:', pedido)
+
+    context = {'pedido': pedido, 'total_pedido': total_pedido, 'entregado': entregado, 'pendiente': pendiente}
+
     return render(request, 'accounts/user.html', context)
 
 
