@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 
 from .models import *
-from .forms import PedidoForm, CreateUserForm
+from .forms import PedidoForm, CreateUserForm, ClienteForm
 from .decorators import unauthenticated_user, allowed_users, admin_only
 
 @unauthenticated_user
@@ -91,6 +91,21 @@ def userPage(request):
     context = {'pedido': pedido, 'total_pedido': total_pedido, 'entregado': entregado, 'pendiente': pendiente}
 
     return render(request, 'accounts/user.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['Cliente'])
+def perfilEditar(request):
+    cliente = request.user.cliente
+    form = ClienteForm(instance=cliente)
+
+    if request.method == 'POST':
+        form = ClienteForm(request.POST, request.FILES, instance=cliente)
+        if form.is_valid():
+            form.save()
+
+
+    context = {'form': form}
+    return render(request, 'accounts/perfil_editar.html', context)
 
 
 

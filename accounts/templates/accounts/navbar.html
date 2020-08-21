@@ -15,7 +15,7 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
-      {% if request.user.is_staf %}
+      {% if request.user.is_staff %}
       <li class="nav-item active">
         <a class="nav-link" href="{% url 'home' %}">Quiero Vender <span class="sr-only">(current)</span></a>
       </li>
@@ -30,6 +30,10 @@
       </li>
         <li class="nav-item">
         <a class="nav-link quienes_somos" href="#">Quienes Somos</a>
+      </li>
+      {% else %}
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'accounts' %}">Ajustes</a>
       </li>
       {% endif %}
     </ul>
