@@ -9,48 +9,50 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import Group
 
 from .models import *
 from .forms import PedidoForm, CreateUserForm
+from .decorators import unauthenticated_user, allowed_users, admin_only
 
-
+@unauthenticated_user
 def registerPage(request):
-    if request.user.is_authenticated:
-        return redirect('home')
-    else:
-        form = CreateUserForm()
-        if request.method == 'POST':
-            form = CreateUserForm(request.POST)
-            if form.is_valid():
-                form.save()
-                user = form.cleaned_data.get('username')
-                messages.success(request, 'Account was created for ' + user)
 
-                return redirect('login')
+    form = CreateUserForm()
+    if request.method == 'POST':
+        form = CreateUserForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            username = form.cleaned_data.get('username')
 
-        context = {'form': form}
-        return render(request, 'accounts/register.html', context)
+            group = Group.objects.get(name='Cliente')
+            user.groups.add(group)
+
+            messages.success(request, 'Account was created for ' + username)
+
+            return redirect('login')
+
+    context = {'form': form}
+    return render(request, 'accounts/register.html', context)
 
 
-
+@unauthenticated_user
 def loginPage(request):
-    if request.user.is_authenticated:
-        return redirect('home')
-    else:
-        if request.method == 'POST':
-            username = request.POST.get('username')
-            password = request.POST.get('password')
 
-            user = authenticate(request, username=username, password=password)
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
 
-            if user is not None:
-                login(request, user)
-                return redirect('home')
-            else:
-                messages.info(request, 'Username OR password is incorrect')
+        user = authenticate(request, username=username, password=password)
 
-        context = {}
-        return render(request, 'accounts/login.html', context)
+        if user is not None:
+            login(request, user)
+            return redirect('home')
+        else:
+            messages.info(request, 'Username OR password is incorrect')
+
+    context = {}
+    return render(request, 'accounts/login.html', context)
 
 
 def logoutUser(request):
@@ -60,6 +62,7 @@ def logoutUser(request):
 
 
 @login_required(login_url='login')
+@admin_only
 def home(request):
     pedido = Pedido.objects.all()
     cliente = Cliente.objects.all()
@@ -72,13 +75,22 @@ def home(request):
     context = {'pedido': pedido, 'cliente': cliente,'total_cliente': total_cliente,'total_pedido': total_pedido, 'entregado': entregado, 'pendiente': pendiente }
     return render(request, 'accounts/dashboard.html', context)
 
+
+def userPage(request):
+    context = {}
+    return render(request, 'accounts/user.html', context)
+
+
+
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['Admin'])
 def productos(request):
     productos = Productos.objects.all()
     return render(request, 'accounts/productos.html', {'productos': productos})
 
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['Admin'])
 def cliente(request, pk_test):
     cliente = Cliente.objects.get(id=pk_test)
 
@@ -91,6 +103,7 @@ def cliente(request, pk_test):
     return render(request, 'accounts/cliente.html',context)
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['Admin'])
 def crearPedido(request, pk):
     PedidoFormSet = inlineformset_factory(Cliente, Pedido, fields=('productos', 'status'), extra=6)
     cliente = Cliente.objects.get(id=pk)
@@ -107,6 +120,7 @@ def crearPedido(request, pk):
     return render(request, 'accounts/pedido_form.html', context)
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['Admin'])
 def actualizarPedido(request, pk):
 
     pedido = Pedido.objects.get(id=pk)
@@ -123,6 +137,7 @@ def actualizarPedido(request, pk):
 
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['Admin'])
 def eliminarPedido(request,pk):
     pedido = Pedido.objects.get(id=pk)
     if request.method == "POST":
