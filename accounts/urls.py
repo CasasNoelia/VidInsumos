@@ -3,6 +3,11 @@ from .import views
 
 urlpatterns = [
 
+
+    path('tienda/', views.tienda, name="tienda"),
+	path('carrito/', views.carrito, name="carrito"),
+	path('confirmacion/', views.confirmacion, name="confirmacion"),
+
     path('register/', views.registerPage, name='register'),
     path('login/', views.loginPage, name='login'),
     path('logout/', views.logoutUser, name="logout"),

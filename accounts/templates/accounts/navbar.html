@@ -19,6 +19,7 @@
       <li class="nav-item active">
         <a class="nav-link" href="{% url 'home' %}">Quiero Vender <span class="sr-only">(current)</span></a>
       </li>
+
       <li class="nav-item">
         <a class="nav-link" href="{% url 'productos' %}">Productos</a>
       </li>
@@ -31,16 +32,26 @@
         <li class="nav-item">
         <a class="nav-link quienes_somos" href="#">Quienes Somos</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link quienes_somos" href="#">Quienes Somos</a>
+      </li>
+
       {% else %}
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'accounts' %}">Ajustes</a>
+        <a class="nav-link" href="{% url 'accounts' %}">Editar</a>
       </li>
       {% endif %}
     </ul>
   </div>
+   <div class="form-inline my-2 my-lg-0">
+     <a href="{% url 'carrito' %}">
+	    		<img  id="carrito-icon" src="{% static 'images/carrito_ecommerce.png' %}">
+	    	</a>
+	    	<p id="carrito-total">0</p>
+
+    </div>
 
   <span class="hello-msg">Hola, {{ request.user }} </span>
-  <span><a class="hello-msg" href="{% url 'logout' %}">Logout</a></span>
-
+  <span><a class="btn btn-warning" href="{% url 'logout' %}">Cerrar Sesión</a></span>
 
 </nav>

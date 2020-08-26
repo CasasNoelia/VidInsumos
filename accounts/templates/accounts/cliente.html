@@ -7,9 +7,8 @@
 <div class="row">
 	<div class="col-md">
 		<div class="card card-body">
-			<h5>Customer:</h5>
+			<h5>Cliente:</h5>
 			<hr>
-			<a class="btn btn-outline-info  btn-sm btn-block" href="">Actualizar datos Cliente</a>
 			<a class="btn btn-outline-info  btn-sm btn-block" href="{% url 'crear_pedido' cliente.id %}">Realizar Pedido</a>
 
 		</div>
@@ -17,7 +16,7 @@
 
 	<div class="col-md">
 		<div class="card card-body">
-			<h5>Contact Information</h5>
+			<h5>Informacion de contacto</h5>
 			<hr>
 			<p>Email: {{cliente.email}} </p>
 			<p>Telefono: {{cliente.phone}}</p>
@@ -26,7 +25,7 @@
 
 	<div class="col-md">
 		<div class="card card-body">
-			<h5>Total Orders</h5>
+			<h5>Total Pedido</h5>
 			<hr>
 			<h1 style="text-align: center;padding: 10px">{{pedido_count}}</h1>
 		</div>
@@ -40,7 +39,7 @@
 		<div class="card card-body">
 			<form method="get">
 
-			<button class="btn btn-primary" type="submit">Search</button>
+
 		  </form>
 		</div>
 	</div>
@@ -53,12 +52,14 @@
 		<div class="card card-body">
 			<table class="table table-sm">
 				<tr>
-					<th>Product</th>
-					<th>Category</th>
-					<th>Date Orderd</th>
+					<th>Producto</th>
+					<th>Categoria</th>
+					<th>Marca</th>
+					<th>Precio</th>
+					<th>Descripción</th>
+					<th>Fecha creación</th>
 					<th>Status</th>
-					<th>Update</th>
-					<th>Remove</th>
+					<th>Eliminar</th>
 				</tr>
 
 				{% for pedido in pedido %}
@@ -66,9 +67,11 @@
 				<tr>
 					<td>{{pedido.productos}}</td>
 					<td>{{pedido.productos.categoria}}</td>
+					<td>{{pedido.productos.marca}}</td>
+					<td>{{pedido.productos.precio}}</td>
+					<td>{{pedido.productos.descripcion}}</td>
 					<td>{{pedido.fecha_creacion}}</td>
 					<td>{{pedido.status}}</td>
-					<td><a class="btn btn-sm btn-info" href="{% url 'actualizar_pedido' pedido.id %}">Actualizar</a> </td>
 					<td><a class="btn btn-sm btn-danger" href="{% url 'eliminar_pedido' pedido.id %}">Eliminar</a> </td>
 
 				</tr>

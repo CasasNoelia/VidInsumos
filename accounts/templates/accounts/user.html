@@ -1,17 +1,25 @@
 
 {%  extends 'accounts/main.html' %}
 {% block content %}
+<hr>
+<h5>QUIERO COMPRAR:</h5>
+<hr>
 {%  include 'accounts/status.html' %}
+
 
 <div class="row">
 	<div class="col-md">
 		<div class="card card-body">
 			<table class="table table-sm">
 				<tr>
-					<th>Product</th>
-					<th>Category</th>
-					<th>Date Orderd</th>
+					<th>Producto</th>
+					<th>Categoria</th>
+					<th>Marca</th>
+					<th>Precio</th>
+					<th>Descripción</th>
+					<th>Fecha creación</th>
 					<th>Status</th>
+					<th>Eliminar</th>
 				</tr>
 
 				{% for pedido in pedido %}
@@ -19,8 +27,12 @@
 				<tr>
 					<td>{{pedido.productos}}</td>
 					<td>{{pedido.productos.categoria}}</td>
+					<td>{{pedido.productos.marca}}</td>
+					<td>{{pedido.productos.precio}}</td>
+					<td>{{pedido.productos.descripcion}}</td>
 					<td>{{pedido.fecha_creacion}}</td>
 					<td>{{pedido.status}}</td>
+					<td><a class="btn btn-sm btn-danger" href="{% url 'eliminar_pedido' pedido.id %}">Eliminar</a> </td>
 
 				</tr>
 

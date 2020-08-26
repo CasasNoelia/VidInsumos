@@ -14,14 +14,18 @@
 						<tr>
 							<th>Productos</th>
 							<th>Categoria</th>
+							<th>Marca</th>
 							<th>Precio</th>
+							<th>Descripción</th>
 						</tr>
 
 						{% for i in productos %}
 							<tr>
 								<td> {{i.name}} </td>
 								<td> {{i.categoria}} </td>
+								<td> {{i.marca}} </td>
 								<td> {{i.precio}} </td>
+								<td> {{i.descripcion}} </td>
 							</tr>
 						{% endfor %}
 
