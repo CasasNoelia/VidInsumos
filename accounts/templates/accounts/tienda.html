@@ -2,44 +2,20 @@
 {% load static %}
 {% block content %}
 	<div class="row">
-		<div class="col-lg-4">
-			<img class="thumbnail" src="{% static 'images/img_producto.png' %}">
+		{% for producto in productos %}
+		<div class="col-lg-3">
+			<hr>
+			<img class="thumbnail" src="{{producto.imagen.url}}">
 			<div class="box-element product">
-				<h6><strong>Producto</strong></h6>
-				<hr>
-
-				<button  class="btn btn-outline-secondary add-btn">agregar al carrito</button>
-				<a class="btn btn-outline-success" href="#">Ver</a>
-				<h4 style="display: inline-block; float: right"><strong>$20</strong></h4>
-
-			</div>
-		</div>
-
-		<div class="col-lg-4">
-			<img class="thumbnail" src="{% static 'images/img_producto.png' %}">
-			<div class="box-element product">
-				<h6><strong>Product</strong></h6>
+				<h6><strong>{{producto.nombre}}</strong></h6>
 				<hr>
 
 				<button  class="btn btn-outline-secondary add-btn">Add to Cart</button>
 				<a class="btn btn-outline-success" href="#">View</a>
-				<h4 style="display: inline-block; float: right"><strong>$20</strong></h4>
+				<h4 style="display: inline-block; float: right"><strong>${{producto.precio}}</strong></h4>
 
 			</div>
 		</div>
-
-		<div class="col-lg-4">
-			<img class="thumbnail" src="{% static 'images/img_producto.png' %}">
-			<div class="box-element product">
-				<h6><strong>Product</strong></h6>
-				<hr>
-
-				<button  class="btn btn-outline-secondary add-btn">Add to Cart</button>
-				<a class="btn btn-outline-success" href="#">View</a>
-				<h4 style="display: inline-block; float: right"><strong>$20</strong></h4>
-
-			</div>
-		</div>
+		{% endfor %}
 	</div>
-
 {% endblock content %}

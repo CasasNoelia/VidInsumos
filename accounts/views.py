@@ -1,4 +1,3 @@
-
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.forms import inlineformset_factory
@@ -17,24 +16,31 @@ from .decorators import unauthenticated_user, allowed_users, admin_only
 
 
 def tienda(request):
-	context = {}
-	return render(request, 'accounts/tienda.html', context)
+    productos = Productos.objects.all()
+    context = {'productos': productos}
+    return render(request, 'accounts/tienda.html', context)
+
 
 def carrito(request):
-	context = {}
-	return render(request, 'accounts/carrito.html', context)
+    if request.user.is_authenticated:
+        cliente = request.user.cliente
+        pedido, creacion = Pedido.objects.get_or_create(cliente=cliente, completo=False)
+        items = pedido.pedidoitem_set.all()
+    else:
+        # Create empty cart for now for non-logged in user
+        items = []
+
+    context = {'items': items}
+    return render(request, 'accounts/carrito.html', context)
+
 
 def confirmacion(request):
-	context = {}
-	return render(request, 'accounts/confirmacion.html', context)
-
-
-
+    context = {}
+    return render(request, 'accounts/confirmacion.html', context)
 
 
 @unauthenticated_user
 def registerPage(request):
-
     form = CreateUserForm()
     if request.method == 'POST':
         form = CreateUserForm(request.POST)
@@ -44,7 +50,7 @@ def registerPage(request):
 
             group = Group.objects.get(name='Cliente')
             user.groups.add(group)
-            Cliente.objects.create(user=user,)
+            Cliente.objects.create(user=user, )
 
             messages.success(request, 'Account was created for ' + username)
 
@@ -56,7 +62,6 @@ def registerPage(request):
 
 @unauthenticated_user
 def loginPage(request):
-
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -78,9 +83,8 @@ def logoutUser(request):
     return redirect('login')
 
 
-
-#@login_required(login_url='login')
-#@admin_only
+# @login_required(login_url='login')
+# @admin_only
 def home(request):
     pedido = Pedido.objects.all()
     cliente = Cliente.objects.all()
@@ -91,11 +95,13 @@ def home(request):
     entregado = pedido.filter(status='Entregado').count()
     pendiente = pedido.filter(status='Pendiente').count()
 
-    context = {'pedido': pedido, 'cliente': cliente,'total_cliente': total_cliente,'total_pedido': total_pedido, 'entregado': entregado, 'pendiente': pendiente }
+    context = {'pedido': pedido, 'cliente': cliente, 'total_cliente': total_cliente, 'total_pedido': total_pedido,
+               'entregado': entregado, 'pendiente': pendiente}
     return render(request, 'accounts/dashboard.html', context)
 
-#@login_required(login_url='login')
-#@allowed_users(allowed_roles=['Cliente'])
+
+# @login_required(login_url='login')
+# @allowed_users(allowed_roles=['Cliente'])
 def userPage(request):
     pedido = request.user.cliente.pedido_set.all()
 
@@ -109,8 +115,9 @@ def userPage(request):
 
     return render(request, 'accounts/user.html', context)
 
-#@login_required(login_url='login')
-#@allowed_users(allowed_roles=['Cliente'])
+
+# @login_required(login_url='login')
+# @allowed_users(allowed_roles=['Cliente'])
 def perfilEditar(request):
     cliente = request.user.cliente
     form = ClienteForm(instance=cliente)
@@ -120,53 +127,49 @@ def perfilEditar(request):
         if form.is_valid():
             form.save()
 
-
     context = {'form': form}
     return render(request, 'accounts/perfil_editar.html', context)
 
 
-
-#@login_required(login_url='login')
-#@allowed_users(allowed_roles=['Admin'])
+# @login_required(login_url='login')
+# @allowed_users(allowed_roles=['Admin'])
 def productos(request):
     productos = Productos.objects.all()
     return render(request, 'accounts/productos.html', {'productos': productos})
 
 
-#@login_required(login_url='login')
-#@allowed_users(allowed_roles=['Cliente', 'Admin'])
+# @login_required(login_url='login')
+# @allowed_users(allowed_roles=['Cliente', 'Admin'])
 def cliente(request, pk_test):
     cliente = Cliente.objects.get(id=pk_test)
 
     pedido = cliente.pedido_set.all()
     pedido_count = pedido.count()
 
-
-
     context = {'cliente': cliente, 'pedido': pedido, 'pedido_count': pedido_count}
-    return render(request, 'accounts/cliente.html',context)
+    return render(request, 'accounts/cliente.html', context)
 
-#@login_required(login_url='login')
-#@allowed_users(allowed_roles=['Admin', 'Cliente'])
+
+# @login_required(login_url='login')
+# @allowed_users(allowed_roles=['Admin', 'Cliente'])
 def crearPedido(request, pk):
     PedidoFormSet = inlineformset_factory(Cliente, Pedido, fields=('productos', 'status'), extra=6)
     cliente = Cliente.objects.get(id=pk)
     formset = PedidoFormSet(queryset=Pedido.objects.none(), instance=cliente)
-    #form = PedidoForm(initial={'cliente': cliente})
+    # form = PedidoForm(initial={'cliente': cliente})
     if request.method == 'POST':
         formset = PedidoFormSet(request.POST, instance=cliente)
         if formset.is_valid():
             formset.save()
             return redirect('/')
 
-
     context = {'form': formset}
     return render(request, 'accounts/pedido_form.html', context)
 
-#@login_required(login_url='login')
-#@allowed_users(allowed_roles=['Admin', 'Cliente'])
-def actualizarPedido(request, pk):
 
+# @login_required(login_url='login')
+# @allowed_users(allowed_roles=['Admin', 'Cliente'])
+def actualizarPedido(request, pk):
     pedido = Pedido.objects.get(id=pk)
     form = PedidoForm(instance=pedido)
 
@@ -180,9 +183,9 @@ def actualizarPedido(request, pk):
     return render(request, 'accounts/pedido_form.html', context)
 
 
-#@login_required(login_url='login')
-#allowed_users(allowed_roles=['Admin', 'Cliente'])
-def eliminarPedido(request,pk):
+# @login_required(login_url='login')
+# allowed_users(allowed_roles=['Admin', 'Cliente'])
+def eliminarPedido(request, pk):
     pedido = Pedido.objects.get(id=pk)
     if request.method == "POST":
         pedido.delete()
