@@ -20,8 +20,23 @@ def tienda(request):
     context = {'productos': productos}
     return render(request, 'accounts/tienda.html', context)
 
-
 def carrito(request):
+
+	if request.user.is_authenticated:
+		cliente = request.user.cliente
+		pedido, creacion = Pedido.objects.get_or_create(cliente=cliente, completo=False)
+		items = pedido.pedidoitem_set.all()
+	else:
+		#Create empty cart for now for non-logged in user
+		items = []
+		pedido = {'get_carrito_total':0, 'get_carrito_items':0}
+
+	context = {'items':items, 'pedido':pedido}
+	return render(request, 'accounts/carrito.html', context)
+
+
+
+def confirmacion(request):
     if request.user.is_authenticated:
         cliente = request.user.cliente
         pedido, creacion = Pedido.objects.get_or_create(cliente=cliente, completo=False)
@@ -29,13 +44,10 @@ def carrito(request):
     else:
         # Create empty cart for now for non-logged in user
         items = []
+        pedido = {'get_carrito_total': 0, 'get_carrito_items': 0}
 
-    context = {'items': items}
-    return render(request, 'accounts/carrito.html', context)
+    context = {'items': items, 'pedido': pedido}
 
-
-def confirmacion(request):
-    context = {}
     return render(request, 'accounts/confirmacion.html', context)
 
 

@@ -31,7 +31,7 @@
 							<input class="form-control" type="text" name="codigo_postal" placeholder="Zip code..">
 						</div>
 						<div class="form-field">
-							<input class="form-control" type="text" name="country" placeholder="Zip code..">
+							<input class="form-control" type="text" name="pais" placeholder="Zip code..">
 						</div>
 					</div>
 
@@ -53,18 +53,17 @@
 				<hr>
 				<h3>Order Summary</h3>
 				<hr>
-				<div class="cart-row">
-					<div style="flex:2"><img class="row-image" src="{% static 'images/img_producto.png' %}"></div>
-					<div style="flex:2"><p>Product 1</p></div>
-					<div style="flex:1"><p>$20.00</p></div>
-					<div style="flex:1"><p>x2</p></div>
+				{% for item in items %}
+				<div class="carrito-row">
+					<div style="flex:2"><img class="row-image" src="{{item.productos.imagen.url}}"></div>
+					<div style="flex:2"><p>{{item.productos.nombre}}</p></div>
+					<div style="flex:1"><p>${{item.productos.precio|floatformat:2}}</p></div>
+					<div style="flex:1"><p>x{{item.cantidad}}</p></div>
 				</div>
-				<h5>Items:   2</h5>
-				<h5>Total:   $4</h5>
+				{% endfor %}
+				<h5>Items:   {{pedido.get_carrito_items}}</h5>
+				<h5>Total:   ${{pedido.get_carrito_total|floatformat:2}}</h5>
 			</div>
 		</div>
 	</div>
 {% endblock content %}
-
-
-

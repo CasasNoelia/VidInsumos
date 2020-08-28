@@ -66,12 +66,29 @@ class Pedido(models.Model):
 
     #cambie return self.productos.name X return str(self.id)
 
+    @property
+    def get_carrito_total(self):
+        pedidoitems = self.pedidoitem_set.all()
+        total = sum([item.get_total for item in pedidoitems])
+        return total
+
+    @property
+    def get_carrito_items(self):
+        pedidoitems = self.pedidoitem_set.all()
+        total = sum([item.cantidad for item in pedidoitems])
+        return total
+
 class PedidoItem(models.Model):
 
     productos = models.ForeignKey(Productos, null=True, on_delete=models.SET_NULL)
     pedido = models.ForeignKey(Pedido, null=True, on_delete=models.SET_NULL)
     cantidad = models.IntegerField(default=0, null=True, blank=True)
     fecha_agregado = models.DateTimeField(auto_now_add=True, null=True)
+
+    @property
+    def get_total(self):
+        total = self.productos.precio * self.cantidad
+        return total
 
 
 class Envio(models.Model):
