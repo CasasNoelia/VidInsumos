@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect
+from django.http import JsonResponse
 from django.http import HttpResponse
 from django.forms import inlineformset_factory
 from django.contrib.auth.forms import UserCreationForm
+
 
 from django.contrib.auth import authenticate, login, logout
 
@@ -13,6 +15,9 @@ from django.contrib.auth.models import Group
 from .models import *
 from .forms import PedidoForm, CreateUserForm, ClienteForm
 from .decorators import unauthenticated_user, allowed_users, admin_only
+
+def updateItem(request):
+    return JsonResponse('Item was added', safe=False)
 
 
 def tienda(request):
